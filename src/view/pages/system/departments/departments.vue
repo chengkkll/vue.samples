@@ -5,6 +5,8 @@
     @search="search"
     :pagination="pagination"
     :create-to="{name: 'System.Departments.Edit', params: {id: 'new'}}"
+    :can-create="checkFun('SystemManage.DepartmentController.Create')"
+    :can-search="checkFun('SystemManage.DepartmentController.SearchPage')"
     v-loading="loading">
     <div slot="search">
       <el-row :gutter="24">
@@ -54,7 +56,15 @@
         <el-table-column
           label="操作">
           <template slot-scope="scope">
-            <el-button  @click="handleEdit(scope.row)" type="text" size="small" >编辑</el-button>
+            <el-button  
+              @click="edit(scope.row)" 
+              type="text"
+              v-if="checkFun('SystemManage.DepartmentController.Update')"
+              size="small" >编辑</el-button>
+            <el-button  
+              @click="deleteData(scope.row)" 
+              type="text" size="small"  
+              v-if="checkFun('SystemManage.DepartmentController.Delete')">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -65,22 +75,26 @@
 
 <script>
 import List from '@/view/components/list-container/list';
+import AuthCheck from '@/view/components/auth-check';
 import departmentApi from '@/model/api/department';
-
 
 export default {
   name: 'Departments',
   extends: List,
+  mixins: [AuthCheck],
   data() {
     return {
+      name: '部门',
     };
   },
   methods: {
     getData(query) {
       return departmentApi.getDepartmentsByQuery(query);
     },
-    handleEdit(data) {
-      console.log(data);
+    handleDlete(id) {
+      return departmentApi.deletDepartmentById(id);
+    },
+    edit(data) {
       this.$router.push({
         name: 'System.Departments.Edit',
         params: {

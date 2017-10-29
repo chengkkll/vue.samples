@@ -47,7 +47,7 @@ const Router = {
     },
     {
       name: 'System.Employees.Edit',
-      path: 'Employees:/id',
+      path: 'Employees/:id',
       meta: '员工编辑',
       component: Employee,
     },
@@ -59,7 +59,7 @@ const Router = {
     },
     {
       name: 'System.Roles.Edit',
-      path: 'Roles:/id',
+      path: 'Roles/:id',
       meta: '角色编辑',
       component: Role,
     },

@@ -51,13 +51,10 @@ router.beforeEach((to, from, next) => {
     next();
   } else {
     const hash = location.hash;
-    if (hash !== '#/login' && hash !== '#/crash') {
+    if (hash !== '#/Login' && hash !== '#/Crash') {
       setToken();
-      // location.href = '#/login';
-      // location.reload();
-      router.push({
-        name: 'Login',
-      });
+      location.href = '#/Login';
+      location.reload();
     } else {
       next();
     }

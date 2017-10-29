@@ -1,12 +1,12 @@
 <template>
-  <div class="list-container">
+  <div class="list-container" >
     <el-row :gutter="24" class="search">
       <el-col :span="18" >
         <slot name="search"></slot>
       </el-col>
       <el-col :span="4">
-        <el-button type="primary" @click="search">搜索</el-button>
-        <el-button v-if="createTo" type="primary" @click="create">新建</el-button>
+        <el-button type="primary" @click="search" v-if="canSearch">搜索</el-button>
+        <el-button v-if="createTo && canCreate" type="primary" @click="create">新建</el-button>
       </el-col>
     </el-row>
     <el-row :gutter="24" class="table">
@@ -28,7 +28,7 @@
 
 export default {
   name: 'ListContainer',
-  props: ['pagination', 'createTo'],
+  props: ['pagination', 'createTo', 'canCreate', 'canSearch'],
   data() {
     return {
     };

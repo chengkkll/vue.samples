@@ -8,9 +8,12 @@ import '@/config/http';
 import store from '@/store';
 import 'element-ui/lib/theme-chalk/index.css';
 import ElementUI from 'element-ui';
+import VueQuillEditor from 'vue-quill-editor';
+
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
+Vue.use(VueQuillEditor);
 
 /* eslint-disable no-new */
 new Vue({

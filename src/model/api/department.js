@@ -29,9 +29,16 @@ function getAllDepartments() {
   .then(res => res.data);
 }
 
+// 删除某部门
+function deletDepartmentById(id) {
+  return $http.delete(`/Department/${id}`)
+  .then(res => res.data);
+}
+
 export default {
   getDepartmentsByQuery,
   getDepartmentById,
   saveDepartment,
   getAllDepartments,
+  deletDepartmentById,
 };

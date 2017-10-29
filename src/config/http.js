@@ -37,7 +37,7 @@ $http.interceptors.response.use(response => {
   // 401 全部跳转到登录页面
   const hash = location.hash;
   if (errorRes.status === 401) {
-    if (hash !== '#/login') {
+    if (hash !== '#/Login') {
       setToken();
       router.push({
         name: 'Login'
@@ -45,7 +45,7 @@ $http.interceptors.response.use(response => {
     }
   }
   if (errorRes.status === 500) {
-    if (hash !== '#/crash') {
+    if (hash !== '#/Crash') {
       router.push({
         name: 'Crash'
       });

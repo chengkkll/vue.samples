@@ -37,6 +37,33 @@ export default {
           this.loading = false;
         });
     },
+    deleteData(item) {
+      this.$alert(`确定要删除该${this.name || '数据'}`, {
+        confirmButtonText: '确定',
+        callback: (action) => {
+          if (action === 'confirm') {
+            this.handleDlete(item.id)
+            .then(() => {
+              this.$message({
+                showClose: true,
+                message: `删除${this.name || '数据'}成功`,
+                type: 'success',
+              });
+              // 重新获取数据
+              this.search();
+            }, res => {
+              console.log(res);
+              let mes = `删除${this.name || '数据'}失败, 请重试`;
+              if (res && res.data && res.data.message) {
+                mes = res.data.message;
+              } 
+              this.$message.error(mes);
+            });
+          }
+        },
+      });
+      
+    },
     // 页码变化
     currentChange(newV) {
       console.log('hagga');

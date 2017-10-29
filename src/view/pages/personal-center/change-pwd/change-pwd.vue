@@ -15,7 +15,8 @@
           <el-input type="password" placeholder="请确认新密码" v-model="changePwdForm.newPwdConfirm" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="" label-width="85px">
-           <el-button type="primary" 
+           <el-button type="primary"
+            v-if="checkFun('SystemManage.EmployeeController.UpdatePasswordMe')"
             @click="confirm" 
             :disabled="passwodInvalid">确定</el-button>
         </el-form-item>
@@ -26,9 +27,11 @@
 
 <script>
 import authApi from '@/model/api/auth';
+import AuthCheck from '@/view/components/auth-check';
 
 export default {
   name: 'PersonalCenter',
+  mixins: [AuthCheck],
   data() {
     return {
       userDetail: null,

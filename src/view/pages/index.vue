@@ -38,18 +38,19 @@ export default {
     // 此处是顶层数据的分发处，此处基础数据如果没有拿到的话，无法正常进入系统，跳转到登录页面
     const promises = [];
     promises.push(authApi.getInfoByToken());
-    promises.push(authApi.getAllFunctions());
-    promises.push(authApi.getAllMenus());
+    // promises.push(authApi.getAllFunctions());
+    // promises.push(authApi.getAllMenus());
     Promise.all(promises).then(
-      ([user, funs, menus]) => {
+      // ([user, funs, menus]) => {
+      ([user]) => {
         this.loading = false;
         this.user = user;
         // 去除掉没有下级的一级导航
         this.user.menu = _.filter(this.user.menu, menu => menu.sub_menu.length);
         // 将三个顶层数据缓存在数据管理机里
         this.$store.commit('setUser', user);
-        this.$store.commit('setMenus', menus);
-        this.$store.commit('setFunctions', funs);
+        // this.$store.commit('setMenus', menus);
+        // this.$store.commit('setFunctions', funs);
         // 获取用户详情会 pedding 于 power 接口，需要在这里获取
         authApi.getDetailById(this.$store.state.user.id)
           .then((userDetail) => {

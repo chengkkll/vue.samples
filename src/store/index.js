@@ -14,9 +14,9 @@ export default new Vuex.Store({
   state: {
     user: null,
     // 所有菜单
-    menus: [],
+    // menus: [],
     // 所有功能点
-    fuctions: [],
+    // fuctions: [],
     // 用户详情
     userDetail: null,
   },
