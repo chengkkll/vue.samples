@@ -18,11 +18,11 @@
       <el-button 
         type="primary" 
         class="signin-btn"
-        :disabled="loading"
+        :disabled="loading || !info.account || !info.password"
         @click="clickBtn()">{{nowLogin?'登录':'注册'}}{{loading?'中...':''}}
       </el-button>
     </div>
-    <a class="change-page">
+    <a class="change-page" v-if="can_register === 'off'">
       {{ nowLogin?'还没有账号?':'已有账号'}} 
       <strong @click="change()">立即{{nowLogin?'注册':'登录'}}</strong>
     </a>
@@ -45,12 +45,13 @@ export default {
         account: '',
         password: '',
       },
+      can_register: env.REGISTER_PAGE,
       loading: false,
     };
   },
   // 跳到这个页面不管是用户主动推出登录，还是因为 http 出现 401 还是用户手动输入地址
   created() {
-    // 如果有token，都需要拿着token去后端验证一下，如果token过期需要清空
+    // 如果有token，都需要拿着token去后端验证一下，如果token过期需要清空，防止因为 token 过期导致的登录死循环
     if (storage.token) {
       authApi.getInfoByToken()
         .then(() => {
@@ -72,6 +73,7 @@ export default {
       }
     },
     change() {
+      if (this.loading) return;
       this.nowLogin = !this.nowLogin;
       document.title = `${this.projectName} - ${this.nowLogin ? '登录' : '注册'}`;
     },
@@ -81,9 +83,21 @@ export default {
         .then((res) => {
           setToken(res.token);
           this.$router.push({ name: 'IndexPage' });
-        }, () => {
+        }, (res) => {
           this.loading = false;
-          this.$message.error('登录失败,请重试');
+          let mes = '登录失败,请重试';
+          if (res && res.data) {
+            if (res.data.Account) {
+              mes = '账号错误';
+            }
+            if (res.data.Password) {
+              mes = '密码错误';
+            }
+            if (res.data.message) {
+              mes = res.data.message;
+            }
+          }
+          this.$message.error(mes);
         });
     },
     register() {

@@ -28,7 +28,7 @@
         :default-sort="sort"
         :data="data"
         style="width: 100%"
-        height="400"> 
+        :max-height="maxHeight"> 
         <el-table-column
           prop="date"
           label="序号"
@@ -84,10 +84,10 @@
               恢复
             </el-button>
             <el-button  
-              @click="action(scope.row.id, '禁止', handleDisable)" 
+              @click="action(scope.row.id, '禁止', handleDisable, 'error')" 
               type="text" 
               size="small"
-              v-if="checkFun('SystemManage.EmployeeController.Disable') && scope.row.originState === 1">
+              v-if="checkFun('SystemManage.EmployeeController.Disable', 'error') && scope.row.originState === 1">
               禁止
             </el-button>
             <el-button  
@@ -98,7 +98,7 @@
               解锁登录
             </el-button>
             <el-button  
-              @click="action(scope.row.id, '删除', handleDlete)" 
+              @click="action(scope.row.id, '删除', handleDlete, 'error')" 
               type="text" 
               size="small" 
               v-if="checkFun('SystemManage.EmployeeController.deleteEmployee')">

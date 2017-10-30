@@ -28,7 +28,7 @@
         :default-sort="sort"
         :data="data"
         style="width: 100%"
-        height="400"> 
+        :max-height="maxHeight"> 
         <el-table-column
           prop="date"
           label="序号"
@@ -62,8 +62,8 @@
               type="text" 
               size="small">编辑</el-button>
             <el-button  
-              v-if="checkFun('SystemManage.RoleController.Delete')"
-              @click="action(scope.row.id, '删除', handleDlete)" 
+              v-if="checkFun('SystemManage.RoleController.Delete', 'error')"
+              @click="action(scope.row.id, '删除', handleDlete, 'error')" 
               type="text" 
               size="small" >删除</el-button>
           </template>

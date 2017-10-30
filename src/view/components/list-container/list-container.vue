@@ -12,10 +12,10 @@
     <el-row :gutter="24" class="table">
       <slot name="table"></slot>
     </el-row>
-    <el-row :gutter="24" class="pagination">
+    <el-row :gutter="24" class="pagination" v-if="pagination.records">
       <el-pagination
-        layout="prev, pager, next"
-        :total="pagination.total"
+        layout="total, prev, pager, next"
+        :total="pagination.records"
         :page-size="pagination.max"
         :current-page="pagination.index"
         @current-change="currentChange">

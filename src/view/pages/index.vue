@@ -34,6 +34,13 @@ export default {
       loading: true,
     };
   },
+  methods: {
+    erroToLogin(mes) {
+      this.$message.error(mes);
+      setToken();
+      this.$router.push({ name: 'Login' });
+    },
+  },
   created() {
     // 此处是顶层数据的分发处，此处基础数据如果没有拿到的话，无法正常进入系统，跳转到登录页面
     const promises = [];
@@ -58,7 +65,8 @@ export default {
             // 讲用户详情也缓存起来
             this.$store.commit('setUserDetail', userDetail);
             if (this.user.menu.length === 0) {
-              this.$message.error('该账号没有菜单可以进入, 请联系管理员增加菜单权限');
+              this.erroToLogin('该账号没有菜单可以进入, 请联系管理员增加菜单权限');
+              return;
             }
             // 默认进入第一个路由
             if (this.user.menu.length !== 0 && this.$route.name === 'IndexPage') {
@@ -68,9 +76,7 @@ export default {
           });
       },
       () => {
-        this.$message.error('获取用户信息、功能点、菜单出错, 请联系管理员核实');
-        setToken();
-        this.$router.push({ name: 'Login' });
+        this.erroToLogin('获取用户信息、功能点、菜单出错, 请联系管理员核实');
       });
   },
 };

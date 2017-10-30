@@ -18,8 +18,8 @@
     </div>
     <div class="left-part">
       <el-breadcrumb separator="/" class="breadcrumb">
-        <el-breadcrumb-item v-for="router in matched" :key="router.name">
-          {{router.meta }}
+        <el-breadcrumb-item :to="{name: route.name}" v-for="route in matched" :key="route.name">
+          {{route.meta }}
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -45,6 +45,7 @@ export default {
     handleCommand(cmd) {
       switch (cmd) {
         case 'Login': {
+          // 退出登录, 需要清空一下 localstorage
           setToken();
           this.$router.push({ name: cmd });
           break;
@@ -55,6 +56,21 @@ export default {
     },
     initBreadcrumb(route) {
       this.matched = route.matched;
+      const arr = route.name.split('.');
+      if (arr.length === 1) {
+        if (route.name === 'IndexPage') {
+          this.$router.push({
+            name: this.$store.state.user.menu[0].sub_menu[0].link,
+          });
+        }
+        this.$store.state.user.menu.forEach((menu) => {
+          if (menu.link === route.name && menu.sub_menu.length) {
+            this.$router.push({
+              name: menu.sub_menu[0].link,
+            });
+          }
+        });
+      }
     },
   },
   watch: {

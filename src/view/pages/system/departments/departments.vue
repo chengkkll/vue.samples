@@ -31,7 +31,7 @@
         :default-sort="sort"
         :data="data"
         style="width: 100%"
-        height="400"> 
+        :max-height="maxHeight"> 
         <el-table-column
           prop="date"
           label="序号"
@@ -65,7 +65,7 @@
               v-if="checkFun('SystemManage.DepartmentController.Update')"
               size="small" >编辑</el-button>
             <el-button  
-              @click="action(scope.row.id, '删除', handleDlete)" 
+              @click="action(scope.row.id, '删除', handleDlete, 'error')" 
               type="text" size="small"  
               v-if="checkFun('SystemManage.DepartmentController.Delete')">删除</el-button>
           </template>

@@ -22,44 +22,44 @@ export default {
   methods: {
     init() {
       if (this.id !== 'new') {
-        this.startLoadingAndTime();
+        this.startLoading();
         this.handleDetDetail()
           .then((res) => {
-            this.clearTimerAndLoading();
+            this.stopLoading();
             this.data = res;
             return res;
           }, (res) => {
-            this.clearTimerAndLoading();
+            this.stopLoading();
             this.$message.error('获取数据失败, 请重试');
             return res;
           });
       }
     },
     // 开始计时
-    startLoadingAndTime() {
+    startLoading() {
       // 防止屏幕抖动，一秒之内加载出来的不要 loading
       this.timer = setTimeout(() => {
         this.loading = true;
       }, 1000);
     },
-    clearTimerAndLoading() {
+    stopLoading() {
       if (this.timer) {
         clearTimeout(this.timer);
       }
       this.loading = false;
     },
     save() {
-      this.startLoadingAndTime();
+      this.startLoading();
       this.handleSave()
         .then(() => {
-          this.clearTimerAndLoading();
+          this.stopLoading();
           this.$message({
             showClose: true,
             message: `${this.isNew ? '新建' : '更新'}${this.name}成功`,
             type: 'success',
           });
         }, () => {
-          this.clearTimerAndLoading();
+          this.stopLoading();
           this.$message.error(`${this.isNew ? '新建' : '更新'}${this.name}失败, 请重试`);
         });
     },
