@@ -135,18 +135,15 @@ export default {
     },
     // 获取所有菜单和所有功能点
     getMenusAndFuns() {
-      this.loading = true;
       const promises = [];
       promises.push(authApi.getAllMenus());
       promises.push(authApi.getAllFunctions());
       Promise.all(promises)
         .then(([menus, functions]) => {
-          this.loading = false;
           this.functions = functions;
           this.menus = menus;
           this.initData();
         }, () => {
-          this.loading = false;
           this.$message.error('获取全部菜单，全部功能点失败, 请重试');
         });
     },

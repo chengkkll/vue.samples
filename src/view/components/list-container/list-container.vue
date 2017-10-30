@@ -41,7 +41,12 @@ export default {
       this.$emit('search');
     },
     create() {
-      this.$router.push(this.createTo);
+      this.$router.push({
+        name: this.createTo,
+        params: {
+          id: 'new',
+        },
+      });
     },
   },
 };

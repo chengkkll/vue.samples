@@ -1,10 +1,13 @@
 <template>
   <div class="departments">
+    <!-- can-create: 是否可以编辑 -->
+    <!-- can-search: 是否可以搜索 -->
+    <!-- create-to: 编辑的跳转路径 -->
    <list-container 
     @currentChange="currentChange" 
     @search="search"
     :pagination="pagination"
-    :create-to="{name: 'System.Departments.Edit', params: {id: 'new'}}"
+    create-to="System.Departments.Edit"
     :can-create="checkFun('SystemManage.DepartmentController.Create')"
     :can-search="checkFun('SystemManage.DepartmentController.SearchPage')"
     v-loading="loading">
@@ -57,12 +60,12 @@
           label="操作">
           <template slot-scope="scope">
             <el-button  
-              @click="edit(scope.row)" 
+              @click="edit('System.Departments.Edit', scope.row.id)" 
               type="text"
               v-if="checkFun('SystemManage.DepartmentController.Update')"
               size="small" >编辑</el-button>
             <el-button  
-              @click="deleteData(scope.row)" 
+              @click="action(scope.row.id, '删除', handleDlete)" 
               type="text" size="small"  
               v-if="checkFun('SystemManage.DepartmentController.Delete')">删除</el-button>
           </template>
@@ -80,27 +83,24 @@ import departmentApi from '@/model/api/department';
 
 export default {
   name: 'Departments',
+  // 所有列表都应该继承于 list 这个通用组件
   extends: List,
+  // 如果需要身份验证接口 checkFun() 那么就需要mixins这个组件
   mixins: [AuthCheck],
   data() {
     return {
+      // 该字段用于表示当前操作的数据名称
       name: '部门',
     };
   },
   methods: {
+    // 该事件是必须事件，用于获取列表数据获取
     getData(query) {
       return departmentApi.getDepartmentsByQuery(query);
     },
+    // 如果需要做异步操作. 那么把异步需要call的API放在这里，在html中绑定这个事件, 如67行代码
     handleDlete(id) {
       return departmentApi.deletDepartmentById(id);
-    },
-    edit(data) {
-      this.$router.push({
-        name: 'System.Departments.Edit',
-        params: {
-          id: data.id,
-        },
-      });
     },
   },
 };

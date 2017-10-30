@@ -72,13 +72,13 @@ export default {
         });
     },
     getAllDepartments() {
-      this.loading = true;
+      // this.loading = true;
       departmentApi.getAllDepartments()
         .then((departments) => {
-          this.loading = false;
+          // this.loading = false;
           this.departments = departments;
         }, () => {
-          this.loading = false;
+          // this.loading = false;
           this.$message.error('获取上级部门失败, 请重试');
         });
     },

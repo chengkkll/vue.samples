@@ -4,7 +4,7 @@
     @currentChange="currentChange" 
     @search="search"
     :pagination="pagination"
-    :create-to="{name: 'System.Employees.Edit', params: {id: 'new'}}"
+    create-to="System.Employees.Edit"
     :can-create="checkFun('SystemManage.EmployeeController.Create')"
     :can-search="checkFun('SystemManage.EmployeeController.SearchPage')"
     v-loading="loading">
@@ -66,18 +66,44 @@
           label="状态">
         </el-table-column>
         <el-table-column
+          width="200"
           label="操作">
           <template slot-scope="scope">
             <el-button  
-              @click="handleEdit(scope.row)" 
+              @click="edit('System.Employees.Edit', scope.row.id)" 
               type="text" 
               size="small"
-              v-if="checkFun('SystemManage.EmployeeController.Update')">编辑</el-button>
+              v-if="checkFun('SystemManage.EmployeeController.Update')">
+              编辑
+            </el-button>
             <el-button  
-              @click="deleteData(scope.row)" 
+              @click="action(scope.row.id, '恢复', handleEnable)" 
+              type="text" 
+              size="small"
+              v-if="checkFun('SystemManage.EmployeeController.Enable') && scope.row.originState === 5">
+              恢复
+            </el-button>
+            <el-button  
+              @click="action(scope.row.id, '禁止', handleDisable)" 
+              type="text" 
+              size="small"
+              v-if="checkFun('SystemManage.EmployeeController.Disable') && scope.row.originState === 1">
+              禁止
+            </el-button>
+            <el-button  
+              @click="action(scope.row.id, '解锁登录', handleUnlockLogin)" 
+              type="text" 
+              size="small"
+              v-if="checkFun('SystemManage.EmployeeController.Unlock')  && scope.row.originState === 3">
+              解锁登录
+            </el-button>
+            <el-button  
+              @click="action(scope.row.id, '删除', handleDlete)" 
               type="text" 
               size="small" 
-              v-if="checkFun('SystemManage.EmployeeController.deleteEmployee')">删除</el-button>
+              v-if="checkFun('SystemManage.EmployeeController.deleteEmployee')">
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -107,13 +133,14 @@ export default {
     handleDlete(id) {
       return employeeApi.deletEmployeeById(id);
     },
-    handleEdit(data) {
-      this.$router.push({
-        name: 'System.Employees.Edit',
-        params: {
-          id: data.id,
-        },
-      });
+    handleUnlockLogin(id) {
+      return employeeApi.unlockEmployee(id);
+    },
+    handleEnable(id) {
+      return employeeApi.enableEmployee(id);
+    },
+    handleDisable(id) {
+      return employeeApi.disableEmployee(id);
     },
   },
 };

@@ -4,7 +4,7 @@
     @currentChange="currentChange" 
     @search="search"
     :pagination="pagination"
-    :create-to="{name: 'System.Roles.Edit', params: {id: 'new'}}"
+    create-to="System.Roles.Edit"
     :can-create="checkFun('SystemManage.RoleController.Create')"
     :can-search="checkFun('SystemManage.RoleController.SearchPage')"
     v-loading="loading">
@@ -58,12 +58,12 @@
           <template slot-scope="scope">
             <el-button  
               v-if="checkFun('SystemManage.RoleController.Update')"
-              @click="handleEdit(scope.row)" 
+              @click="edit('System.Roles.Edit', scope.row.id)" 
               type="text" 
               size="small">编辑</el-button>
             <el-button  
               v-if="checkFun('SystemManage.RoleController.Delete')"
-              @click="deleteData(scope.row)" 
+              @click="action(scope.row.id, '删除', handleDlete)" 
               type="text" 
               size="small" >删除</el-button>
           </template>
@@ -94,14 +94,6 @@ export default {
     },
     handleDlete(id) {
       return roleApi.deletRoleById(id);
-    },
-    handleEdit(data) {
-      this.$router.push({
-        name: 'System.Roles.Edit',
-        params: {
-          id: data.id,
-        },
-      });
     },
   },
 };

@@ -38,10 +38,31 @@ function deletEmployeeById(id) {
     .then(res => res.data);
 }
 
+ // 可用单个员工
+function enableEmployee(id) {
+  return $http.patch(`/Employee/Enable/${id}`)
+    .then(res => res.data);
+}
+
+// 禁用单个员工
+function disableEmployee(id) {
+  return $http.patch(`/Employee/Disable/${id}`)
+    .then(res => res.data);
+}
+
+// 解锁单个员工
+function unlockEmployee(id) {
+  return $http.patch(`/Employee/Unlock/${id}`)
+    .then(res => res.data);
+}
+
 
 export default {
   getEmployeesByQuery,
   getEmployeeById,
   saveEmployee,
   deletEmployeeById,
+  enableEmployee,
+  disableEmployee,
+  unlockEmployee,
 };

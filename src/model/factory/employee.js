@@ -8,6 +8,7 @@ class emplyee {
   init() {
     this.show.departmentName = _.clone(this.data.department.name);
     this.show.roleName = _.clone(this.data.role.name);
+    this.show.originState = this.data.state;
     switch (this.data.state) {
       case 1:
         this.show.state = '可用';

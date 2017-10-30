@@ -4,11 +4,11 @@ import router from '@/view/router';
 
 $http.defaults.baseURL = process.env.API_URL;
 
-const progressStart = _.debounce(() => {
+const progressStart = _.throttle(() => {
   Progress.start();
 }, 1000);
 // 结束请求进度条
-const progressFinish = _.debounce(() => {
+const progressFinish = _.throttle(() => {
   Progress.finish();
 }, 4000);
 

@@ -178,24 +178,18 @@ export default {
         });
     },
     getAllDepartments() {
-      this.loading = true;
       departmentApi.getAllDepartments()
         .then((departments) => {
-          this.loading = false;
           this.departments = departments;
         }, () => {
-          this.loading = false;
           this.$message.error('获取所有部门失败, 请重试');
         });
     },
     getAllRoles() {
-      this.loading = true;
       roleApi.getAllRoles()
         .then((roles) => {
-          this.loading = false;
           this.roles = roles;
         }, () => {
-          this.loading = false;
           this.$message.error('获取所有角色失败, 请重试');
         });
     },
