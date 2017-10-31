@@ -155,23 +155,28 @@ export default {
       if (!this.data.functions) {
         this.data.functions = [];
       }
-      this.data.menu.forEach((a) => {
-        a.sub_menu.forEach((b) => {
-          // 此处 b为 this.data.menu.sub_menu[i]
-          this.menus.forEach((c) => {
-            c.sub_menu.forEach((d) => {
-              if (d.link === b.link) {
+      this.menus.forEach((c) => {
+        c.sub_menu.forEach((d) => {
+          // 如果是新建的，默认全选
+          if (this.isNew) {
+            d.selected = true;
+          }
+          this.data.menu.forEach((a) => {
+            a.sub_menu.forEach((b) => {
+              if (d.link === b.link || this.isNew) {
                 d.selected = true;
               }
             });
           });
         });
       });
-      this.data.functions.forEach((a) => {
-        // 此处a为 this.data.functions[i]
-        this.functions.forEach((b) => {
-          b.group.forEach((c) => {
-            c.functionList.forEach((d) => {
+      this.functions.forEach((b) => {
+        b.group.forEach((c) => {
+          c.functionList.forEach((d) => {
+            if (this.isNew) {
+              d.selected = true;
+            }
+            this.data.functions.forEach((a) => {
               if (a.policy === d.policy) {
                 d.selected = true;
               }

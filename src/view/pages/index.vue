@@ -35,8 +35,7 @@ export default {
     };
   },
   methods: {
-    erroToLogin(mes) {
-      this.$message.error(mes);
+    erroToLogin() {
       setToken();
       this.$router.push({ name: 'Login' });
     },
@@ -65,7 +64,7 @@ export default {
             // 讲用户详情也缓存起来
             this.$store.commit('setUserDetail', userDetail);
             if (this.user.menu.length === 0) {
-              this.erroToLogin('该账号没有菜单可以进入, 请联系管理员增加菜单权限');
+              this.erroToLogin();
               return;
             }
             // 默认进入第一个路由
@@ -76,7 +75,7 @@ export default {
           });
       },
       () => {
-        this.erroToLogin('获取用户信息、功能点、菜单出错, 请联系管理员核实');
+        this.erroToLogin();
       });
   },
 };

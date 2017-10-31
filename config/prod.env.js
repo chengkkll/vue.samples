@@ -3,7 +3,7 @@ module.exports = {
   // 环境，不可以去除
   NODE_ENV: '"production"',
   // 接口地址
-  API_URL: '"https://management-api.daovoice.io/v1"',
+  API_URL: '"http://118.89.221.56:99/api"',
   // 项目名称
   PROJECT_NAME: '"DEMO"',
   // 前缀，title 和 lostorage 的前缀

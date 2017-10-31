@@ -15,7 +15,7 @@ export default {
         prop: 'name',
         order: 'descending',
       },
-      maxHeight: '600',
+      maxHeight: '560',
     };
   },
   computed: {
@@ -95,7 +95,6 @@ export default {
     },
     // 页码变化
     currentChange(newV) {
-      console.log('hagga');
       this.pagination.index = newV;
       this.search();
     },
