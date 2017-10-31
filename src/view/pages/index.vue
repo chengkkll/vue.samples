@@ -20,7 +20,9 @@
 
 <script>
 import { setToken } from '@/config/http';
+import env from '@/config/env';
 import authApi from '@/model/api/auth';
+import io from 'socket.io-client';
 
 export default {
   name: 'IndexPage',
@@ -32,12 +34,49 @@ export default {
         name: null,
       },
       loading: true,
+      socket: null,
     };
   },
   methods: {
     erroToLogin() {
       setToken();
       this.$router.push({ name: 'Login' });
+    },
+
+    getDetailById() {
+      return authApi.getDetailById(this.$store.state.user.id)
+        .then((userDetail) => {
+          this.userDetail = userDetail;
+          // 讲用户详情也缓存起来
+          this.$store.commit('setUserDetail', userDetail);
+          if (this.user.menu.length === 0) {
+            this.erroToLogin();
+            return;
+          }
+          // 默认进入第一个路由
+          if (this.user.menu.length !== 0 && this.$route.name === 'IndexPage') {
+            this.$router.push({ name: this.user.menu[0].sub_menu[0].link });
+          }
+          this.loading = false;
+        });
+    },
+    createSocket() {
+      console.log('before create socket');
+      if (!env.socketUrl) return;
+      // 如果已经有socket连接的，那就断掉重连一次
+      if (this.socket) this.socket.disconnect();
+      this.socket = io(`${env.socketUrl}/`, {
+        path: '/stream/socket.io',
+      });
+      // socket 创建成功
+      this.socket.on('connect', () => {
+        console.log('create socket success');
+        this.socket.emit('enter_room', '1q2w3e');
+      });
+      // 可以在这里监控socket的数据推送，有数据就可以去操作 store，供整个应用使用
+      this.socket.on('newMes', (data) => {
+        console.log('has new mes', data);
+      });
     },
   },
   created() {
@@ -49,7 +88,6 @@ export default {
     Promise.all(promises).then(
       // ([user, funs, menus]) => {
       ([user]) => {
-        this.loading = false;
         this.user = user;
         // 去除掉没有下级的一级导航
         this.user.menu = _.filter(this.user.menu, menu => menu.sub_menu.length);
@@ -58,20 +96,10 @@ export default {
         // this.$store.commit('setMenus', menus);
         // this.$store.commit('setFunctions', funs);
         // 获取用户详情会 pedding 于 power 接口，需要在这里获取
-        authApi.getDetailById(this.$store.state.user.id)
-          .then((userDetail) => {
-            this.userDetail = userDetail;
-            // 讲用户详情也缓存起来
-            this.$store.commit('setUserDetail', userDetail);
-            if (this.user.menu.length === 0) {
-              this.erroToLogin();
-              return;
-            }
-            // 默认进入第一个路由
-            if (this.user.menu.length !== 0 && this.$route.name === 'IndexPage') {
-              this.$router.push({ name: this.user.menu[0].sub_menu[0].link });
-            }
-            this.loading = false;
+        this.getDetailById()
+          .then(() => {
+            // 前置数据都准备好了，可以创建socket了
+            this.createSocket();
           });
       },
       () => {
