@@ -18,13 +18,13 @@ function getInfoByToken() {
     .then(res => res.data);
 }
 
-// 获取所有菜单
+// 获取多有功能点
 function getAllFunctions() {
   return $http.get('/Function')
     .then(res => res.data);
 }
 
-// 获取多有功能点
+// 获取所有菜单
 function getAllMenus() {
   return $http.get('/Menu')
     .then(res => res.data);
@@ -42,6 +42,22 @@ function changePassword(data) {
     .then(res => res.data);
 }
 
+// 更新一个菜单
+function updateMenu(menu) {
+  if (menu.id) {
+    return $http.post('/Menu', menu)
+    .then(res => res.data);
+  }
+  return $http.put('/Menu', menu)
+    .then(res => res.data);
+}
+
+// 删除一个主菜单
+function deleteMenu(id) {
+  return $http.delete(`/Menu/${id}`)
+    .then(res => res.data);
+}
+
 export default {
   login,
   register,
@@ -50,4 +66,6 @@ export default {
   getAllMenus,
   getDetailById,
   changePassword,
+  updateMenu,
+  deleteMenu,
 };

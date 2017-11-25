@@ -1,135 +1,210 @@
 <template>
-   <edit-panel title="一些 demo">
-
-     <!-- +++++++++++++++++++++++++++++++++++++++++++ -->
-     
-    <p>文件上传 - 参考：<a href="http://element.eleme.io/#/zh-CN/component/upload" target="_blank">element</a></p>
-    <el-upload
-      :multiple="false"
-      class="upload-demo"
-      ref="upload"
-      action="https://jsonplaceholder.typicode.com/posts/"
-      :on-preview="handlePreview"
-      :on-success="handleSuccess"
-      :on-remove="handleRemove"
-      :file-list="fileList"
-      :auto-upload="false">
-      <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-      <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
-      <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-    </el-upload>
-
-     <!-- +++++++++++++++++++++++++++++++++++++++++++ -->
-     <div class="hr"></div>
-     <p>富文本 - 参考：<a href="https://github.com/surmon-china/vue-quill-editor" target="_blank">quill-editor</a></p>
-     <quill-editor v-model="content"
-        ref="myQuillEditor"
-        :options="editorOption"
-        @blur="onEditorBlur($event)"
-        @focus="onEditorFocus($event)"
-        @ready="onEditorReady($event)">
-      </quill-editor>
-     <!-- +++++++++++++++++++++++++++++++++++++++++++ -->
-      <div class="hr"></div>
-      <p>弹出窗口 - 参考：<a href="http://element.eleme.io/#/zh-CN/component/dialog" target="_blank">element</a></p>
-      <el-dialog title="DIALOG" :visible.sync="dialogVisible">
-        <h1>SUCCESS DIALOG</h1>
-      </el-dialog>
-      <el-button size="small" type="primary" @click="dialogVisible = true">打开窗口</el-button>
-
-
-       <!-- +++++++++++++++++++++++++++++++++++++++++++ -->
-      <div class="hr"></div>
-      <p>确认窗口 - 参考：<a href="http://element.eleme.io/#/zh-CN/component/message-box" target="_blank">element</a></p>
-      <el-button size="small" type="primary" @click="open">打开窗口</el-button>
-
-       <!-- +++++++++++++++++++++++++++++++++++++++++++ -->
-      <div class="hr"></div>
-      <p>Toast - 参考：<a href="http://element.eleme.io/#/zh-CN/component/message-box" target="_blank">element</a></p>
-      <el-button size="small" type="primary" @click="openNoty">打开窗口</el-button>
+  <edit-panel title="菜单管理" v-loading="loading">
+    <el-row :gutter="24">
+      <el-col :span="6">
+        <el-button type="primary"  @click="updateRootMenu()">新增一级菜单</el-button>
+      </el-col>
+    </el-row>
+    <br>
+    <br>
+    <el-row :gutter="24" v-if="menus.length">
+      <el-col>
+        <el-tabs type="border-card">
+          <el-tab-pane
+            v-for="menu in menus" 
+            :label="menu.name" 
+            :key="menu.id">
+            <span 
+              @click="updateSubMenu(menu, item)" 
+              class="material-button selected" 
+              v-for="item in menu.sub_menu"
+              :key="item.name">
+              {{item.name}}</span>&nbsp;&nbsp;
+              <div class="input-group">
+                 <el-button round  @click="updateSubMenu(menu)">新增二级菜单</el-button>
+                 <el-button type="success" round  @click="updateRootMenu(menu)">编辑当前一级菜单</el-button>
+                 <el-button type="danger" round  @click="deleteRootMenu(menu)">删除当前一级菜单</el-button>
+              </div>
+          </el-tab-pane>
+        </el-tabs>
+      </el-col>
+    </el-row>
+    <el-dialog
+      :close-on-click-modal="false"
+      :title="title"
+      width="40%"
+      :visible.sync="dialogVisible"
+      :before-close="handleDialogClose">
+      <el-row :gutter="20">
+        <el-col>
+          <el-form :model="editingMenu" label-width="80px">
+            <el-form-item label="上级菜单" label-width="85px" v-if="editingType === 'sub'">
+              <el-input placeholder="上级菜单" v-model="rootMenu.name" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="菜单名称" label-width="85px">
+              <el-input placeholder="菜单管理" v-model="editingMenu.name"></el-input>
+            </el-form-item>
+            <el-form-item label="菜单地址" label-width="85px">
+              <el-input placeholder="System.Menus" v-model="editingMenu.link"></el-input>
+            </el-form-item>
+            <el-form-item label="菜单图标" label-width="85px" v-if="editingType === 'root'">
+              <el-input placeholder="el-icon-setting" v-model="editingMenu.icon"></el-input>
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleDialogClose">取 消</el-button>
+        <el-button type="primary" @click="confirm">确 定</el-button>
+      </span>
+    </el-dialog>
   </edit-panel>
 </template>
 
 <script>
+import authApi from '@/model/api/auth';
+
 export default {
   name: 'Menus',
   data() {
     return {
-      // 文件上传
-      fileList: [],
-      // 富文本编辑器
-      content: '<h2>I am Example</h2>',
-      editorOption: {
-        // some quill options
-      },
+      loading: false,
+      menus: [],
+      activeMenuTabName: '',
+      newRootMenuName: '',
       dialogVisible: false,
+      editingType: '',
+      rootMenu: {},
+      editingMenu: {},
     };
   },
-  methods: {
-    // 文件上传
-    submitUpload() {
-      this.$refs.upload.submit();
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleSuccess(response, file, fileList) {
-      console.log(response, file, fileList);
-    },
-
-    // 富文本
-    onEditorBlur(editor) {
-      console.log('editor blur!', editor);
-    },
-    onEditorFocus(editor) {
-      console.log('editor focus!', editor);
-    },
-    onEditorReady(editor) {
-      console.log('editor ready!', editor);
-    },
-    onEditorChange({ editor, html, text }) {
-      console.log('editor change!', editor, html, text);
-      this.content = html;
-    },
-
-    // 弹框
-    open() {
-      this.$alert('这是一段内容', '标题名称', {
-        confirmButtonText: '确定',
-        callback: (action) => {
-          this.$message({
-            type: 'info',
-            message: `action: ${action}`,
-          });
-        },
-      });
-    },
-    openNoty() {
-      const h = this.$createElement;
-      this.$notify({
-        title: '标题名称',
-        message: h('i', { style: 'color: teal' },
-        '这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案'),
-      });
+  created() {
+    this.getMenus();
+  },
+  computed: {
+    title() {
+      let title = '';
+      switch (this.editingType) {
+        case 'root': {
+          title = `${this.editingMenu.id ? '编辑' : '新增'}根菜单 `;
+          if (this.editingMenu.name) {
+            title = `${title} [${this.editingMenu.name}]`;
+          }
+          break;
+        }
+        case 'sub': {
+          title = `${this.editingMenu.link ? '编辑' : '新增'} [${this.rootMenu.name}] 的子菜单 `;
+          if (this.editingMenu.name) {
+            title = `${title} [${this.editingMenu.name}]`;
+          }
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+      return title;
     },
   },
-  // get the current quill instace object.
-  computed: {
-    editor() {
-      return this.$refs.myQuillEditor.quill;
+  methods: {
+    // 获取所有菜单
+    getMenus() {
+      this.loading = true;
+      authApi.getAllMenus()
+        .then((menus) => {
+          this.menus = menus;
+          this.loading = false;
+        }, () => {
+          this.loading = false;
+          this.$message.error('获取全部菜单失败, 请重试');
+        });
+    },
+    // 删除当前根菜单
+    deleteRootMenu(rootMenu) {
+      this.$confirm(`此操作将永久删除 [${rootMenu.name}] 以及其下的所有子菜单！ `, '删除确认', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(() => {
+        authApi.deleteMenu(rootMenu.id)
+          .then(() => {
+            this.$message.success('删除成功!');
+            this.reset();
+            this.getMenus();
+          }, () => {
+            this.$message.error('删除失败, 请重试!');
+          });
+      });
+    },
+    // 添加根菜单
+    updateRootMenu(rootMenu = {}) {
+      this.editingType = 'root';
+      this.editingMenu = rootMenu;
+      this.dialogVisible = true;
+    },
+    // 添加子菜单
+    updateSubMenu(rootMenu, subMenu = {}) {
+      this.editingType = 'sub';
+      this.rootMenu = rootMenu;
+      this.editingMenu = subMenu;
+      this.dialogVisible = true;
+    },
+    confirm() {
+      let params = {};
+      switch (this.editingType) {
+        case 'root': {
+          params = this.editingMenu;
+          break;
+        }
+        case 'sub': {
+          params = this.rootMenu;
+          let catched = false;
+          params.sub_menu = params.sub_menu.map((menu) => {
+            if (menu.name === this.editingMenu.name) {
+              catched = true;
+              return this.editingMenu;
+            }
+            return menu;
+          });
+          if (!catched) {
+            params.sub_menu.push(this.editingMenu);
+          }
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+      const title = params.id ? '更新菜单' : '创建菜单';
+      authApi.updateMenu(params)
+        .then(() => {
+          this.$message.success(`${title}成功`);
+          this.reset();
+          this.getMenus();
+        }, () => {
+          this.$message.error(`${title}失败, 请重试`);
+        });
+      this.dialogVisible = false;
+    },
+    handleDialogClose(done) {
+      if (typeof done === 'function') {
+        done();
+      }
+      this.reset();
+    },
+    reset() {
+      this.rootMenu = {};
+      this.editingMenu = {};
+      this.editingType = '';
+      this.dialogVisible = false;
     },
   },
 };
 </script>
 
-<style scoped lang="scss">
-.hr{
-  margin-bottom: 60px;
-  padding-bottom: 60px;
-  border-bottom: 1px solid #000;
-  width: 100%;
+<style lang="scss">
+.input-group{
+  margin-top: 20px;
+  margin-left: 4px;
 }
 </style>

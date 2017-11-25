@@ -23,7 +23,7 @@
                 :key="menu.id">
                 <span 
                   @click="handleTabClick(item)" 
-                  class="menu-span" 
+                  class="material-button" 
                   :class="{selected: item.selected}" 
                   v-for="item in menu.sub_menu"
                   :key="item.name">
@@ -50,7 +50,7 @@
                       :key="item.id">
                       <span 
                         @click="handleTabClick(fun)" 
-                        class="menu-span" 
+                        class="material-button" 
                         :class="{selected: fun.selected}" 
                         v-for="fun in item.functionList"
                         :key="fun.name">
@@ -244,23 +244,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.function-span, .menu-span{
-  height: 22px;
-  line-height: 22px;
-  display: inline-block;
-  outline: none;
-  cursor: pointer;
-  padding: 4px 8px;
-  margin: 6px 4px;
-  border-radius: 12px;
-  border: 1px solid #e4e7ed;
-  box-shadow: 0 1px 4px rgba(204, 209, 217, 0.3);
-  user-select: none;
-}
-.selected{
-  color: #FFF;
-  border: 1px solid rgb(63, 81, 181);
-  background-color: rgb(63, 81, 181);
-}
+<style lang="scss">
+
+
 </style>

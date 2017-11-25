@@ -53,11 +53,7 @@ export default {
       this.handleSave()
         .then(() => {
           this.stopLoading();
-          this.$message({
-            showClose: true,
-            message: `${this.isNew ? '新建' : '更新'}${this.name}成功`,
-            type: 'success',
-          });
+          this.$message.success(`${this.isNew ? '新建' : '更新'}${this.name}成功`);
         }, () => {
           this.stopLoading();
           this.$message.error(`${this.isNew ? '新建' : '更新'}${this.name}失败, 请重试`);

@@ -59,10 +59,7 @@ export default {
     confirm() {
       authApi.changePassword(this.changePwdForm)
         .then(() => {
-          this.$message({
-            message: '密码修改成功',
-            type: 'success',
-          });
+          this.$message.success('密码修改成功');
           this.changePwdForm = {};
         }, (res) => {
           this.$message.error(res.data.message);

@@ -22,7 +22,7 @@
         @click="clickBtn()">{{nowLogin?'登录':'注册'}}{{loading?'中...':''}}
       </el-button>
     </div>
-    <a class="change-page" v-if="can_register === 'off'">
+    <a class="change-page" v-if="can_register === 'on'">
       {{ nowLogin?'还没有账号?':'已有账号'}} 
       <strong @click="change()">立即{{nowLogin?'注册':'登录'}}</strong>
     </a>

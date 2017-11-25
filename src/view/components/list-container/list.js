@@ -52,11 +52,7 @@ export default {
           if (action === 'confirm') {
             fun(id)
               .then(() => {
-                this.$message({
-                  showClose: true,
-                  message: `${actionName}${this.name || '数据'}成功`,
-                  type: 'success',
-                });
+                this.$message.success(`${actionName}${this.name || '数据'}成功`);
                 // 重新获取数据
                 this.search();
               }, res => {
