@@ -138,4 +138,68 @@ export default {
   }
 }
 
+.help-text{
+  color: #9ba3af;
+}
+.custom-table{
+  color: #9ba3af;
+  border: 1px solid #e4e7ed;
+  border-radius: 3px;
+  text-align: left;
+  margin: 0;
+  width: 100%;
+  overflow: visible;
+  border-collapse: collapse;
+  border-spacing: 0;
+  tr{
+    border-color: #e4e7ed;
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+  th{
+    padding: 0 10px;
+    width: 0;
+    white-space: nowrap;
+  }
+  thead{
+    background: #f1f3f6;
+    tr{
+      background: #f1f3f6;
+      height: 40px;
+      line-height: 40px;
+    }
+  }
+  tbody tr{
+    border-bottom: 1px solid #f1f3f6;
+  }
+  tbody tr:last-child {
+    border-bottom: none!important;
+  }
+  td{
+    padding: 0 10px;
+    height: 40px;
+    line-height: 40px;
+    font-weight: 400;
+    font-size: 14px;
+    color: #595f69;
+    border-color: #e4e7ed;
+    word-break: break-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    margin: auto;
+  }
+}
+.data-empty{
+  width: 100%;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+  border: 1px dashed #e4e7ed;
+  border-radius: 5px;
+  background: #fbfcfc;
+  color: #ccd1d9;
+}
+
 </style>

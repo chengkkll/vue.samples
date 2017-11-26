@@ -41,12 +41,12 @@ export default {
     },
     // ID 是需要操作的 id， actionName 是操作名称， fun 是需要调用的方法
     // type: success / info / warning / error
-    action(id, actionName, fun, type='info') {
+    action(id, actionName, fun, type, message = '') {
       if (!id || !actionName || !fun) {
         throw Error('action 参数给定错误');
       }
-      this.$alert(`确定要${actionName}该${this.name || '数据'}`, {
-        type,
+      this.$alert(`确定要${actionName}该${this.name || '数据'}?${message}`, {
+       type: type || 'info',
         confirmButtonText: '确定',
         callback: (action) => {
           if (action === 'confirm') {
