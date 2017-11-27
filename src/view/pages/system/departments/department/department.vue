@@ -8,6 +8,7 @@
           </el-form-item>
           <el-form-item label="上级部门" label-width="85px">
             <el-select v-model="data.parent_id" placeholder="请选择上级部门">
+              <el-option label="无" value="">
               <el-option
                 v-for="item in departments"
                 :key="item.id"
