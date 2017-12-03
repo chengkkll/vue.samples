@@ -12,7 +12,7 @@
         <div class="form-group">
           <label>密码
           </label>
-          <input type="password" v-model="info.password">
+          <input type="password" v-model="info.password" @keyup.enter="clickBtn">
         </div>
       </form>
       <el-button 

@@ -8,6 +8,7 @@ const Router = {
   path: 'PersonalCenter',
   meta: '个人中心',
   component: PersonalCenter,
+  redirect: 'PersonalCenter/Common',
   children: [{
     name: 'PersonalCenter.Common',
     path: 'Common',

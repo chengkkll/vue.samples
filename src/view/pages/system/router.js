@@ -14,6 +14,7 @@ const Router = {
   path: 'System',
   meta: '系统管理',
   component: System,
+  redirect: 'System/Departments',
   children: [
     {
       name: 'System.Departments',
