@@ -58,6 +58,24 @@ function deleteMenu(id) {
     .then(res => res.data);
 }
 
+// 发送验证码
+function sendCode(mobile) {
+  return $http.post('/Forget/SendCode', {
+    mobile,
+  })
+    .then(res => res.data);
+}
+
+// 修改密码
+function changePasswordByCode({ mobile, code, newPassword }) {
+  return $http.post('/Forget/ChangePassword', {
+    mobile,
+    code,
+    newPassword,
+  })
+    .then(res => res.data);
+}
+
 export default {
   login,
   register,
@@ -68,4 +86,6 @@ export default {
   changePassword,
   updateMenu,
   deleteMenu,
+  sendCode,
+  changePasswordByCode,
 };

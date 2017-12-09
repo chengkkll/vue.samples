@@ -1,8 +1,9 @@
 <template>
   <div class="login">
     <div class="bg"></div>
-    <div class="account-container">
-      <h2 class="title">{{nowLogin?'登录':'注册'}} {{projectName}} 帐号</h2>
+    <!-- 登录/注册 账号 -->
+    <div class="account-container" v-if="current !== 'forget'">
+      <h2 class="title">{{CURRENT_MAP[current]}} {{PROJECT_NAME}} 帐号</h2>
       <hr class="header-line">
       <form autocomplete="off">
         <div class="form-group">
@@ -12,20 +13,61 @@
         <div class="form-group">
           <label>密码
           </label>
-          <input type="password" v-model="info.password" @keyup.enter="clickBtn">
+          <input type="password" v-model="info.password" @keyup.enter="loginOrRegister">
+        </div>
+        <div class="form-group switch-forget">
+          <a @click="switchPage('forget')">忘记密码?</a>
         </div>
       </form>
       <el-button 
         type="primary" 
         class="signin-btn"
         :disabled="loading || !info.account || !info.password"
-        @click="clickBtn()">{{nowLogin?'登录':'注册'}}{{loading?'中...':''}}
+        @click="loginOrRegister()">{{CURRENT_MAP[current]}}{{loading?'中...':''}}
       </el-button>
     </div>
-    <a class="change-page" v-if="can_register === 'on'">
-      {{ nowLogin?'还没有账号?':'已有账号'}} 
-      <strong @click="change()">立即{{nowLogin?'注册':'登录'}}</strong>
+    <a class="switch-page" v-if="current !== 'forget' && REGISTER_PAGE === 'on'">
+      {{ current === 'login'?'还没有账号?':'已有账号'}} 
+      <strong @click="switchPage(current === 'login' ? 'register' : 'login')">
+        立即{{current === 'login'?'注册':'登录'}}
+      </strong>
     </a>
+    <!-- 忘记密码 -->
+    <div class="account-container" v-if="current === 'forget'">
+      <h2 class="title">找回密码</h2>
+      <hr class="header-line">
+      <form autocomplete="off">
+        <div class="form-group">
+          <label>电话号码</label>
+          <input type="text" v-model="forget.mobile" style="width: 60%">
+            <!-- :disabled="loading || !/^1\d{10}$/.test(forget.mobile)" -->
+          <el-button 
+            type="primary" 
+            size="small" 
+            :disabled="!forgetMobileValid || loading || !forget.canSendCode"
+            @click="sendCode()">{{ forget.step === 'sendCode' ? '发送验证码' : `${60 - forget.lastSend}秒后再试` }}
+          </el-button>
+        </div>
+        <div class="form-group">
+          <label>验证码</label>
+          <input type="text" v-model="forget.code">
+        </div>
+        <div class="form-group">
+          <label>新登录密码</label>
+          <input type="password" v-model="forget.newPassword">
+        </div>
+        <div class="form-group switch-forget">
+          <a @click="switchPage('login')">想起密码了?</a>
+        </div>
+      </form>
+      <el-button 
+        type="primary" 
+        class="signin-btn"
+        :disabled="canNotChangePassword"
+        @click="changePasswordByCode()">确认
+      </el-button>
+    </div>
+    
   </div>
 </template>
 
@@ -35,17 +77,33 @@ import { setToken } from '@/config/http';
 import env from '@/config/env';
 import storage from '@/config/localstorage';
 
+const CURRENT_MAP = {
+  login: '登录',
+  register: '登录',
+  forget: '登录',
+};
+
 export default {
   name: 'Login',
   data() {
     return {
-      projectName: env.PROJECT_NAME,
-      nowLogin: true,
+      PROJECT_NAME: env.PROJECT_NAME,
+      REGISTER_PAGE: env.REGISTER_PAGE,
+      CURRENT_MAP,
       info: {
         account: '',
         password: '',
       },
-      can_register: env.REGISTER_PAGE,
+      forget: {
+        mobile: '',
+        code: '',
+        step: 'sendCode',
+        newPassword: '',
+        canSendCode: true,
+        lastSend: 0,
+        timer: null,
+      },
+      current: 'login',
       loading: false,
     };
   },
@@ -63,19 +121,35 @@ export default {
         });
     }
   },
+  computed: {
+    // 忘记密码的电话是否合法
+    forgetMobileValid() {
+      return /^1\d{10}$/.test(this.forget.mobile);
+    },
+    // 是否可以更改密码
+    canNotChangePassword() {
+      // 忙碌中 | 电话号码不合法 | 没有验证码 | 验证码还没发送 | 新密码长度太短
+      return this.loading ||
+        !this.forgetMobileValid ||
+        !this.forget.code ||
+        this.forget.step !== 'sended' ||
+        this.forget.newPassword.length < 6;
+    },
+  },
   methods: {
-    clickBtn() {
+    loginOrRegister() {
       if (this.loading) return;
-      if (this.nowLogin) {
+      if (this.current === 'login') {
         this.login();
       } else {
         this.register();
       }
     },
-    change() {
+    // 切换面板
+    switchPage(current) {
       if (this.loading) return;
-      this.nowLogin = !this.nowLogin;
-      document.title = `${this.projectName} - ${this.nowLogin ? '登录' : '注册'}`;
+      this.current = current;
+      document.title = `${this.PROJECT_NAME} - ${CURRENT_MAP[current]}`;
     },
     login() {
       this.loading = true;
@@ -85,23 +159,59 @@ export default {
           this.$router.push({ name: 'IndexPage' });
         }, (res) => {
           this.loading = false;
-          let mes = '登录失败,请重试';
-          if (res && res.data) {
-            if (res.data.Account) {
-              mes = '账号错误';
-            }
-            if (res.data.Password) {
-              mes = '密码错误';
-            }
-            if (res.data.message) {
-              mes = res.data.message;
-            }
-          }
-          this.$message.error(mes);
+          this.$message.error(_.get(res, 'data.message', '登录失败,请重试'));
         });
     },
+    // 注册
     register() {
-      authApi.register(this.info);
+      this.loading = true;
+      authApi.register(this.info)
+        .then(() => {
+          this.loading = false;
+          this.$message.success('注册成功, 请您登录');
+          this.switchPage('login');
+        }, (res) => {
+          this.loading = false;
+          this.$message.error(_.get(res, 'data.message', '注册失败,请重试'));
+        });
+    },
+
+    // 发送验证码
+    sendCode() {
+      this.loading = true;
+      this.forget.canSendCode = false;
+      this.forget.step = 'sended';
+      authApi.sendCode(this.forget.mobile)
+        .then(() => {
+          this.loading = false;
+          this.$message.success('验证码发送成功');
+        }, (res) => {
+          this.loading = false;
+          this.$message.error(_.get(res, 'data.message', '验证码发送失败, 请稍后重试'));
+        });
+      this.forget.timer = setInterval(() => {
+        this.forget.lastSend += 1;
+        if (this.forget.lastSend >= 60) {
+          this.forget.lastSend = 0;
+          this.forget.canSendCode = true;
+          this.forget.step = 'sendCode';
+          clearInterval(this.forget.timer);
+        }
+      }, 1000);
+    },
+
+    // 验证验证码
+    changePasswordByCode() {
+      this.loading = true;
+      authApi.changePasswordByCode(this.forget)
+        .then(() => {
+          this.loading = false;
+          this.$message.success('密码修改成功, 请重新登录');
+          this.switchPage('login');
+        }, (res) => {
+          this.loading = false;
+          this.$message.error(_.get(res, 'data.message', '电话号码或验证码错误, 请重试'));
+        });
     },
   },
 };
@@ -154,6 +264,14 @@ export default {
       background-color: #e4e7ed;
     }
     form .form-group {
+      &.switch-forget{
+        text-align: right;
+        a{
+          color: #9ba3af;
+          cursor: pointer;
+          text-decoration: underline;
+        }
+      }
       margin-bottom: 14px;
       label {
         line-height: 24px;
@@ -189,7 +307,7 @@ export default {
       width: 100%;
     }
   }
-  .change-page {
+  .switch-page {
     font-size: 14px;
     display: block;
     width: 310px;

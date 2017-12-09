@@ -18,7 +18,7 @@
           <el-form-item label="籍贯" label-width="85px">
             <el-input placeholder="请输入籍贯" v-model="data.native_place"></el-input>
           </el-form-item>
-           <el-form-item label="电话" label-width="85px">
+           <el-form-item label="电话" label-width="85px" prop="mobile">
             <el-input placeholder="请输入电话" v-model="data.mobile"></el-input>
           </el-form-item>
            <el-form-item label="座机" label-width="85px">
@@ -151,6 +151,9 @@ export default {
         logon_account: [
           { required: true, message: '请输入登录账号', trigger: 'blur' },
         ],
+        mobile: [
+          { required: true, message: '请输入电话号码', trigger: 'blur' },
+        ],
         logon_password: [
           { required: true, message: '请输入登录密码', trigger: 'blur' },
         ],
@@ -199,6 +202,7 @@ export default {
       return this.data.name
         && this.data.logon_account
         && this.data.logon_password
+        && this.data.mobile
         && this.data.role.id
         && this.data.department.id;
     },
