@@ -38,8 +38,11 @@
       <hr class="header-line">
       <form autocomplete="off">
         <div class="form-group">
-          <label>电话号码</label>
-          <input type="text" v-model="forget.mobile" style="width: 60%">
+          <label>手机号码</label>
+          <input 
+            placeholder="请输入合法的手机号码" 
+            type="text" 
+            v-model="forget.mobile" style="width: 60%">
             <!-- :disabled="loading || !/^1\d{10}$/.test(forget.mobile)" -->
           <el-button 
             type="primary" 
@@ -50,11 +53,24 @@
         </div>
         <div class="form-group">
           <label>验证码</label>
-          <input type="text" v-model="forget.code">
+          <input 
+            placeholder="请输入验证码" 
+            type="text" 
+            v-model="forget.code">
         </div>
         <div class="form-group">
           <label>新登录密码</label>
-          <input type="password" v-model="forget.newPassword">
+          <input 
+            placeholder="请输入 6-20 位新密码" 
+            type="password" 
+            v-model="forget.newPassword">
+        </div>
+         <div class="form-group">
+          <label>确认新密码</label>
+          <input 
+            placeholder="请再次输入新密码" 
+            type="password" 
+            v-model="forget.newPasswordConfirm">
         </div>
         <div class="form-group switch-forget">
           <a @click="switchPage('login')">想起密码了?</a>
@@ -99,6 +115,7 @@ export default {
         code: '',
         step: 'sendCode',
         newPassword: '',
+        newPasswordConfirm: '',
         canSendCode: true,
         lastSend: 0,
         timer: null,
@@ -133,7 +150,8 @@ export default {
         !this.forgetMobileValid ||
         !this.forget.code ||
         this.forget.step !== 'sended' ||
-        this.forget.newPassword.length < 6;
+        this.forget.newPassword.length < 6 ||
+        this.forget.newPassword !== this.forget.newPasswordConfirm;
     },
   },
   methods: {

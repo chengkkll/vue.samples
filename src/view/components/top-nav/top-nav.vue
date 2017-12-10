@@ -89,6 +89,8 @@ $top-nav-height: 50px;
   height: $top-nav-height;
   line-height: $top-nav-height;
   border-bottom: 1px solid #e4e7ed;
+  z-index: 2;
+  position: relative;
   &>div{
     border-left: 1px solid #e4e7ed;
     float: right;

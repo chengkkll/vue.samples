@@ -18,8 +18,8 @@
           <el-form-item label="籍贯" label-width="85px">
             <el-input placeholder="请输入籍贯" v-model="data.native_place"></el-input>
           </el-form-item>
-           <el-form-item label="电话" label-width="85px" prop="mobile">
-            <el-input placeholder="请输入电话" v-model="data.mobile"></el-input>
+           <el-form-item label="手机号码" label-width="85px" prop="mobile">
+            <el-input placeholder="请输入手机号码(11位数字)" v-model="data.mobile"></el-input>
           </el-form-item>
            <el-form-item label="座机" label-width="85px">
             <el-input placeholder="请输入座机" v-model="data.telephone"></el-input>
@@ -138,6 +138,9 @@ export default {
       name: '员工',
       sexes,
       data: {
+        name: '',
+        logon_account: '',
+        logon_password: '',
         role: {},
         department: {},
       },
@@ -147,15 +150,19 @@ export default {
       rules: {
         name: [
           { required: true, message: '请输入员工名称', trigger: 'blur' },
+          { min: 2, max: 20, message: '请输入合法的员工名称', trigger: 'blur' },
         ],
         logon_account: [
           { required: true, message: '请输入登录账号', trigger: 'blur' },
+          { min: 2, max: 20, message: '请输入 2 - 20 位的登录账号', trigger: 'blur' },
         ],
         mobile: [
-          { required: true, message: '请输入电话号码', trigger: 'blur' },
+          { required: true, message: '请输入手机号码', trigger: 'blur' },
+          { min: 11, max: 11, message: '请输入合法的手机号码', trigger: 'blur' },
         ],
         logon_password: [
           { required: true, message: '请输入登录密码', trigger: 'blur' },
+          { min: 6, max: 20, message: '请输入 6 - 20 位的密码', trigger: 'blur' },
         ],
         'role.id': [
           { required: true, message: '请输入选择角色', trigger: 'blur' },
@@ -199,10 +206,10 @@ export default {
   },
   computed: {
     valid() {
-      return this.data.name
-        && this.data.logon_account
-        && this.data.logon_password
-        && this.data.mobile
+      return this.data.name.length > 2
+        && this.data.logon_account.length > 2
+        && this.data.logon_password.length > 6
+        && /^1\d{10}$/.test(this.data.mobile)
         && this.data.role.id
         && this.data.department.id;
     },
