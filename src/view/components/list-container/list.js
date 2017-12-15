@@ -27,7 +27,7 @@ export default {
       query.pagination = this.pagination;
       query.sort = this.sort;
       /* eslint-disable */
-      query.sort.asc = query.sort.order === 'descending' ? false : true;
+      query.sort.asc = _.get(query, 'sort.order', 'descending') === 'descending' ? false : true;
       delete query.sort.order;
       this.getData(query)
         .then((res) => {
