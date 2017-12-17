@@ -15,9 +15,6 @@
           <el-form-item label="编号" label-width="85px">
             <el-input placeholder="请输入编号" v-model="data.code"></el-input>
           </el-form-item>
-          <el-form-item label="籍贯" label-width="85px">
-            <el-input placeholder="请输入籍贯" v-model="data.native_place"></el-input>
-          </el-form-item>
            <el-form-item label="手机号码" label-width="85px" prop="mobile">
             <el-input placeholder="请输入手机号码(11位数字)" v-model="data.mobile"></el-input>
           </el-form-item>
@@ -29,6 +26,9 @@
           </el-form-item>
            <el-form-item label="地址" label-width="85px">
             <el-input placeholder="请输入地址" v-model="data.address"></el-input>
+          </el-form-item>
+          <el-form-item label="" label-width="85px">
+            <el-button type="primary"  @click="save" :disabled="!valid">保存</el-button>
           </el-form-item>
         </el-col>
         <el-col :span="8" :offset="1">
@@ -84,9 +84,6 @@
           </el-form-item>
           <el-form-item label="职务" label-width="85px">
             <el-input placeholder="请输入职务" v-model="data.position"></el-input>
-          </el-form-item>
-          <el-form-item label="" label-width="85px">
-            <el-button type="primary"  @click="save" :disabled="!valid">保存</el-button>
           </el-form-item>
         </el-col>
       </el-row>
