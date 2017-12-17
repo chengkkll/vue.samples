@@ -114,7 +114,7 @@ export default {
     };
   },
   methods: {
-    handleDetDetail() {
+    handleGetDetail() {
       return roleApi.getRoleById(this.id)
         .then((role) => {
           this.getMenusAndFuns();

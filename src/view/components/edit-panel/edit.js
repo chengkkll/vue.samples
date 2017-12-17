@@ -23,7 +23,7 @@ export default {
     init() {
       if (this.id !== 'new') {
         this.startLoading();
-        this.handleDetDetail()
+        this.handleGetDetail()
           .then((res) => {
             this.stopLoading();
             this.data = res;

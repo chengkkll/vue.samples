@@ -59,7 +59,7 @@ export default {
     };
   },
   methods: {
-    handleDetDetail() {
+    handleGetDetail() {
       return departmentApi.getDepartmentById(this.id);
     },
     handleSave() {

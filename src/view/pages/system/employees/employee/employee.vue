@@ -147,11 +147,11 @@ export default {
       rules: {
         name: [
           { required: true, message: '请输入员工名称', trigger: 'blur' },
-          { min: 2, max: 20, message: '请输入合法的员工名称', trigger: 'blur' },
+          { min: 1, max: 20, message: '请输入合法的员工名称', trigger: 'blur' },
         ],
         logon_account: [
           { required: true, message: '请输入登录账号', trigger: 'blur' },
-          { min: 2, max: 20, message: '请输入 2 - 20 位的登录账号', trigger: 'blur' },
+          { min: 1, max: 20, message: '请输入 2 - 20 位的登录账号', trigger: 'blur' },
         ],
         mobile: [
           { required: true, message: '请输入手机号码', trigger: 'blur' },
@@ -159,7 +159,7 @@ export default {
         ],
         logon_password: [
           { required: true, message: '请输入登录密码', trigger: 'blur' },
-          { min: 6, max: 20, message: '请输入 6 - 20 位的密码', trigger: 'blur' },
+          { min: 1, max: 20, message: '请输入 6 - 20 位的密码', trigger: 'blur' },
         ],
         'role.id': [
           { required: true, message: '请输入选择角色', trigger: 'blur' },
@@ -171,7 +171,7 @@ export default {
     };
   },
   methods: {
-    handleDetDetail() {
+    handleGetDetail() {
       return employeeApi.getEmployeeById(this.id);
     },
     handleSave() {
@@ -203,10 +203,10 @@ export default {
   },
   computed: {
     valid() {
-      return this.data.name.length > 2
-        && this.data.logon_account.length > 2
-        && this.data.logon_password.length > 6
-        && /^1\d{10}$/.test(this.data.mobile)
+      return this.data.name.length
+        && this.data.logon_account.length
+        && this.data.logon_password.length
+        && /^\d{11}$/.test(this.data.mobile)
         && this.data.role.id
         && this.data.department.id;
     },
