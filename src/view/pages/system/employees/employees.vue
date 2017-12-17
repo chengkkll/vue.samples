@@ -101,7 +101,7 @@
               @click="action(scope.row.id, '删除', handleDlete, 'error')" 
               type="text" 
               size="small" 
-              v-if="checkFun('SystemManage.EmployeeController.deleteEmployee')">
+              v-if="checkFun('SystemManage.EmployeeController.Delete')">
               删除
             </el-button>
           </template>
