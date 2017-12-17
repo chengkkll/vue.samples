@@ -28,6 +28,7 @@ module.exports = {
     'Noty': true,
     '$noty': true,
     'Progress': true,
+    'daovoice': true,
   },
   // add your custom rules here
   'rules': {

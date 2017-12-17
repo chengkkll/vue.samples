@@ -126,6 +126,9 @@ export default {
   },
   // 跳到这个页面不管是用户主动推出登录，还是因为 http 出现 401 还是用户手动输入地址
   created() {
+    if (daovoice) {
+      daovoice('init');
+    }
     // 如果有token，都需要拿着token去后端验证一下，如果token过期需要清空，防止因为 token 过期导致的登录死循环
     if (storage.token) {
       authApi.getInfoByToken()

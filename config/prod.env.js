@@ -11,4 +11,6 @@ module.exports = {
   // 是否有注册页面
   // on 打开 off 关闭
   REGISTER_PAGE: '"off"',
+  // 配置 daovoice，可以不开启
+  DAOVOICE_APPID: '"92d73dd6"',
 }

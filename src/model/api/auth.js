@@ -1,4 +1,7 @@
 import { $http } from '@/config/const';
+import env from '@/config/env';
+
+const AppID = env.DAOVOICE_APPID;
 
 // 登录
 function login(info) {
@@ -33,7 +36,22 @@ function getAllMenus() {
 // 获取用户详细信息
 function getDetailById(id) {
   return $http.get(`/Employee/${id}`)
-    .then(res => res.data);
+  .then((res) => {
+    const userDetail = res.data;
+    if (AppID && daovoice) {
+      daovoice('init', {
+        app_id: AppID,
+        user_id: userDetail.id,
+        name: userDetail.name,
+        email: userDetail.email,
+        phone: userDetail.mobile,
+        role_name: userDetail.role.name,
+        update_date: userDetail.update_date,
+        project_name: env.PROJECT_NAME,
+      });
+    }
+    return userDetail;
+  });
 }
 
 // 更改密码

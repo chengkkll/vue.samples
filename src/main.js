@@ -1,3 +1,5 @@
+ /* eslint-disable */ 
+ import './widget';
 import Vue from 'vue';
 import router from '@/view/router';
 import '@/view/components';
