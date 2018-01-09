@@ -78,18 +78,16 @@ function deleteMenu(id) {
 
 // 发送验证码
 function sendCode(mobile) {
-  return $http.post('/Forget/SendCode', {
-    mobile,
-  })
+  return $http.get(`/User/GetCode?mobile=${mobile}`)
     .then(res => res.data);
 }
 
 // 修改密码
 function changePasswordByCode({ mobile, code, newPassword }) {
-  return $http.post('/Forget/ChangePassword', {
+  return $http.post('/User/RevisePassword', {
     mobile,
-    code,
-    newPassword,
+    verification_code: code,
+    password: newPassword,
   })
     .then(res => res.data);
 }
